@@ -8,6 +8,5 @@ meteor-platform
 coffeescript
 fourseven:scss
 accounts-base
-accounts-ui
 accounts-google
 aldeed:collection2

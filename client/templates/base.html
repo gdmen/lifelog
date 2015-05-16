@@ -33,6 +33,14 @@
       </div>
 
       <div id="content">
+        {{#if currentUser }}
+          <form class="new-task">
+            <input type="text" name="text" placeholder="Type to add new tasks" />
+          </form>
+          {{#each tasks}}
+            {{> task}}
+          {{/each}}
+        {{/if}}
       </div>
     </div><!--/page-container -->
   </div><!--/non-footer -->

@@ -4,7 +4,7 @@
 /*
  * Foundation settings
  */
-@import "private/bower/foundation/scss/foundation/_functions";
+@import "public/bower/foundation/scss/foundation/_functions";
 
 $primary-color: #2C8EC9;
 $secondary-color: #E7E7E7;
@@ -69,12 +69,12 @@ $include-open-sans: false;
 }
 
 @import
-  "private/bower/foundation/scss/normalize",
-  "private/bower/foundation/scss/foundation";
+  "public/bower/foundation/scss/normalize",
+  "public/bower/foundation/scss/foundation";
 
   
 // Component CSS / SCSS
-@import "private/bower/font-awesome/scss/font-awesome";
+@import "public/bower/font-awesome/scss/font-awesome";
 
 // Custom Foundation overrides
 .column, .columns {
