@@ -78,7 +78,7 @@ $include-open-sans: false;
 
 // Custom Foundation overrides
 .column, .columns {
-	@include clearfix;
+  @include clearfix;
   position: static;
 }
 .row {
@@ -165,20 +165,5 @@ footer {
     p:last-child {
       margin-bottom: 0;
     }
-  }
-}
-
-// Forms (e.g. login)
-.single-page-form {
-  margin-top: 1rem;
-}
-.errorlist {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  li {
-    background-color: $alert-color;
-    border: 1px solid scale-color($alert-color, $lightness: 14%);
-    padding: 0.5rem 1rem;
   }
 }
