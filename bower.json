@@ -1,0 +1,8 @@
+{
+  "name":  "HackerTracker",
+  "version": "0.0.1",
+  "dependencies": {
+    "foundation": "latest",
+    "font-awesome": "latest"
+  }
+}

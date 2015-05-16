@@ -1,0 +1,51 @@
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HackerTracker</title>
+</head>
+<body>
+  <div id="non-footer">
+    <div id="page-container">
+      <div class="contain-to-grid">
+          <nav class="top-bar">
+              <ul class="title-area">
+                  <li class="name">
+                      <h1><a href="/">HackerTracker</a></h1>
+                  </li>
+                  <li class="toggle-topbar"><a><i class="fa fa-bars fa-2x"></i></a></li>
+              </ul>
+
+              <section class="top-bar-section">
+                  <!-- Right Nav Section -->
+                  <ul class="right">
+                      <!--
+                      {% block main_menu_right %}
+                          {% if user.is_authenticated %}
+                              <li><a href="/profile"><i class="fa fa-user"></i> {{ user.username }}</a></li>
+                              <li><a href="/m/#/settings"><i class="fa fa-cog"></i> Settings</a></li>
+                              <li><a href="{% url 'django.contrib.auth.views.logout' %}?next=/"><i class="fa fa-sign-out"></i> Sign out</a></li>
+                          {% else %}
+                              <li><a href="{% url 'django.contrib.auth.views.login' %}"><i class="fa fa-sign-in"></i> Sign in</a></li>
+                          {% endif %}
+                      {% endblock %} -->
+                  </ul>
+                  <!-- Left Nav Section -->
+                  <ul class="left">
+                  </ul>
+              </section>
+          </nav>
+      </div>
+
+      <div id="content">
+        {{> full_page_form}}
+      </div>
+    </div><!--/page-container -->
+  </div><!--/non-footer -->
+  
+  <footer>
+    <div class="row">
+      <div class="small-12 columns">
+      </div>
+    </div>
+  </footer>
+</body>
