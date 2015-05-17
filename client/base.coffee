@@ -1,5 +1,4 @@
 Meteor.subscribe 'userData'
-Meteor.subscribe 'tasks'
 
 Template.body.events
 
@@ -12,12 +11,3 @@ Template.body.events
     e.preventDefault()
     Meteor.logout()
     return
-
-  'submit .new-task': (e) ->
-    Meteor.call 'createTask', event.target.text.value
-    event.target.text.value = ""
-    return false
-
-Template.body.helpers
-  tasks: ->
-    Tasks.find {}, sort: created: -1

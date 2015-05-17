@@ -1,0 +1,18 @@
+<template name="dashboard">
+  <div id="dashboard" class="row">
+    <div id="center" class="medium-8 large-6 columns">
+
+      <div id="tasks" class="row">
+        <div class="input">
+          {{> createTask }}
+        </div>
+        <div class="list">
+          {{#each tasks}}
+            {{> task}}
+          {{/each}}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</template>

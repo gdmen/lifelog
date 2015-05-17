@@ -1,9 +1,7 @@
 // Make sure the charset is set appropriately
 @charset "UTF-8";
 
-/*
- * Foundation settings
- */
+// Foundation settings
 @import "public/bower/foundation/scss/foundation/_functions";
 
 $primary-color: #2C8EC9;
@@ -132,6 +130,45 @@ $accent-green: #EAFFDA;
 $accent-blue: #E7FEFF;
 $accent-purple: #F2C7FF;
 $accent-gray: #EEEEEE;
+// Module colors
+$task-color: $accent-green;
+$task-color-dark: scale-color($task-color, $lightness: -25%, $saturation: +10%);
+$note-color: $accent-yellow;
+
+// Custom mixins
+
+@mixin opacity($trans) {
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=#{$trans * 100})";
+  -moz-opacity: $trans;
+  -khtml-opacity: $trans;
+  opacity: $trans;
+}
+@mixin round-button($diameter, $color) {
+  @include radius($diameter / 2);
+  background-color: $color;
+  border: 1px solid #DDD;
+  display: inline-block;
+  height: $diameter;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  width: $diameter;
+  &:hover {
+    @include opacity(0.75);
+    cursor: pointer;
+  }
+  i {
+    color: #FFF;
+    display: inline-block;
+    font-size: ($diameter * 2/3);
+    padding: ($diameter * 1/6) 0;
+    // Special cases for misaligned icons
+    &.fa-plus {
+      padding-top: ($diameter * 3/14);
+      padding-bottom: ($diameter * 1/14);
+    }
+  }
+}
 
 // Custom styles
 
@@ -165,5 +202,22 @@ footer {
     p:last-child {
       margin-bottom: 0;
     }
+  }
+}
+
+// Dashboard
+#dashboard {
+  .input {
+    form {
+      input {
+        margin: 0;
+        padding: $input-padding;
+      }
+      button {
+        @include round-button(2.7rem, $task-color-dark);
+      }
+    }
+  }
+  .list {
   }
 }
