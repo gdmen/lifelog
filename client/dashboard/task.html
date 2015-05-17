@@ -1,3 +1,10 @@
-<template name="task">
-  <li>{{brief}} | {{estimate}} minutes</li>
+<template name="showTask">
+  <div class="item">
+    <div class="margin">
+      <input type="checkbox" class="toggle" />
+    </div>
+    <div class="line">
+      {{brief}} | {{estimate}} minutes
+    </div>
+  </div>
 </template>

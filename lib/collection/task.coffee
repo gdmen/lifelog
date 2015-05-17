@@ -15,7 +15,7 @@ TasksSchema = new SimpleSchema(
   estimate:
     type: Number
     label: 'Time estimate in minutes'
-    defaultValue: 30
+    defaultValue: 0
   created:
     type: Date
     label: 'Date created'

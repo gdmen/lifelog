@@ -1,14 +1,14 @@
 <template name="dashboard">
   <div id="dashboard" class="row">
-    <div id="center" class="medium-8 large-6 columns">
+    <div id="center" class="small-8 small-centered columns">
 
-      <div id="tasks" class="row">
+      <div id="tasks" class="item-list">
         <div class="input">
           {{> createTask }}
         </div>
         <div class="list">
           {{#each tasks}}
-            {{> task}}
+            {{> showTask}}
           {{/each}}
         </div>
       </div>
