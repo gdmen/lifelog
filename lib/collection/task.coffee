@@ -20,11 +20,15 @@ TasksSchema = new SimpleSchema(
     type: Date
     label: 'Date created'
     autoValue: ->
-      new Date
-  completed:
+      if @isInsert
+        return new Date
+      @unset
+      return
+  updated:
     type: Date
-    label: 'Date completed'
-    optional: true
+    label: 'Date updated'
+    autoValue: ->
+      new Date
   user:
     type: String
     label: 'User id'
@@ -38,6 +42,11 @@ Meteor.methods
       brief: brief
       estimate: estimate
       user: Meteor.userId()
+  setTaskState: (id, state) ->
+    task = Tasks.findOne id
+    if task.user != Meteor.userId()
+      throw new (Meteor.Error)('not-authorized')
+    Tasks.update id, $set: state: state, updated: new Date
   deleteTask: (id) ->
     task = Tasks.findOne id
     if task.user != Meteor.userId()

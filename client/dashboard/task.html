@@ -1,7 +1,7 @@
 <template name="showTask">
-  <div class="item">
+  <div class="item {{#if isComplete}}complete{{/if}}">
     <div class="margin">
-      <input type="checkbox" class="toggle" />
+      <input type="checkbox" checked="{{isComplete}}" class="toggle" />
     </div>
     <div class="line">
       {{brief}} | {{estimate}} minutes

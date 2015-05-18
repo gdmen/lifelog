@@ -215,7 +215,7 @@ footer {
 // Dashboard
 #dashboard {
   .item-list {
-    $item-list-margin-width: 4em;
+    $item-list-margin-width: 2.5em;
     $item-list-padding: 0.5em;
     box-shadow: 0 2px 6px 0 rgba(0,0,0,.2),0 25px 50px 0 rgba(0,0,0,.15);
     margin-top: 5em;
@@ -231,17 +231,21 @@ footer {
     .item {
       border-top: 1px dotted scale-color($light-border-color, $lightness: 20%);
       overflow: hidden;
-      padding: $item-list-padding;
       .margin {
         float: left;
+        height: 2.5em;
+        position: relative;
+        width: $item-list-margin-width + $item-list-padding;
         .toggle {
+          height: 100%;
+          width: 100%;
           margin: 0;
-          padding: 0;
         }
       }
       .line {
         //@include text-ellipsis();
-        padding-left: $item-list-margin-width;
+        padding: $item-list-padding;
+        padding-left: $item-list-margin-width + $item-list-padding * 3;
       }
       &:last-of-type:before {
         content: '';
@@ -250,7 +254,7 @@ footer {
         width: $item-list-padding;
         position: absolute;
         top: 0;
-        left: $item-list-margin-width - $item-list-padding;
+        left: $item-list-margin-width + $item-list-padding;
         height: 100%;
       }
     }
