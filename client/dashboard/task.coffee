@@ -2,7 +2,7 @@ Meteor.subscribe 'tasks'
 
 Template.dashboard.helpers
   tasks: ->
-    Tasks.find {}, sort: created: -1
+    Tasks.find { state: $ne: 'DELETED' }, sort: created: -1
 
 Template.createTask.events
 
@@ -15,8 +15,14 @@ Template.createTask.events
 Template.showTask.events
 
   'click .toggle': (e) ->
+    e.preventDefault()
     state = if e.target.checked then 'COMPLETE' else 'QUEUED'
     Meteor.call 'setTaskState', @_id, state
+    return
+
+  'click .delete': (e) ->
+    e.preventDefault()
+    Meteor.call 'deleteTask', @_id
     return
 
 Template.showTask.helpers

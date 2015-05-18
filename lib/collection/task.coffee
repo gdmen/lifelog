@@ -51,4 +51,4 @@ Meteor.methods
     task = Tasks.findOne id
     if task.user != Meteor.userId()
       throw new (Meteor.Error)('not-authorized')
-    Tasks.remove id
+    Meteor.call 'setTaskState', id, 'DELETED'

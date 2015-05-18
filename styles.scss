@@ -231,6 +231,9 @@ footer {
     .item {
       border-top: 1px dotted scale-color($light-border-color, $lightness: 20%);
       overflow: hidden;
+      &.complete {
+        text-decoration: line-through;
+      }
       .margin {
         float: left;
         height: 2.5em;
@@ -246,6 +249,10 @@ footer {
         //@include text-ellipsis();
         padding: $item-list-padding;
         padding-left: $item-list-margin-width + $item-list-padding * 3;
+        .delete {
+          color: $alert-color;
+          float: right;
+        }
       }
       &:last-of-type:before {
         content: '';
