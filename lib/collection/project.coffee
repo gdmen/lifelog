@@ -1,4 +1,4 @@
-@Projects = new (Mongo.Collection)('features')
+@Projects = new (Mongo.Collection)('projects')
 ProjectsSchema = new SimpleSchema(
   brief:
     type: String
