@@ -15,7 +15,11 @@ TasksSchema = new SimpleSchema(
   estimate:
     type: Number
     label: 'Time estimate in minutes'
-    defaultValue: 0
+    optional: true
+  subtasks:
+    type: [String]
+    label: 'List of sub Task ids'
+    optional: true
   created:
     type: Date
     label: 'Date created'
