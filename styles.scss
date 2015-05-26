@@ -246,7 +246,7 @@ footer {
         }
       }
       .line {
-        //@include text-ellipsis();
+        cursor: pointer;
         padding: $item-list-padding;
         padding-left: $item-list-margin-width + $item-list-padding * 3;
         .delete {

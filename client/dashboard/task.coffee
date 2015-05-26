@@ -25,6 +25,22 @@ Template.showTask.events
     Meteor.call 'deleteTask', @_id
     return
 
+  "click .line": (e) ->
+    e.preventDefault()
+    e.target.focus()
+    priorId = Session.get 'selectedTask'
+
+    Session.set 'selectedTask', event.target.id
+
+  "keydown .line": (e) ->
+    selectedId = Session.get 'selectedTask'
+    if selectedId != e.target.id
+      return
+    code = e.keyCode or e.which
+    if code == 9
+      e.preventDefault()
+      console.log "TAB " + selectedId
+
 Template.showTask.helpers
 
   'isComplete': ->
