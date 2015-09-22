@@ -9,9 +9,9 @@ Meteor.publish 'userData', ->
   return
 
 
-Meteor.publish 'notes', ->
-  Notes.find user: @userId
+Meteor.publish 'measurements', ->
+  Measurements.find user: @userId
 
 
-Meteor.publish 'tasks', ->
-  Tasks.find user: @userId
+Meteor.publish 'measurement_types', ->
+  MeasurementTypes.find user: @userId

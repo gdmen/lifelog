@@ -19,6 +19,7 @@ fastclick@1.0.3
 fourseven:scss@3.0.0
 geojson-utils@1.0.3
 google@1.1.5
+harrison:papa-parse@1.1.0
 html-tools@1.0.4
 htmljs@1.0.4
 http@1.1.0

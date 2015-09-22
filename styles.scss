@@ -25,7 +25,7 @@ $topbar-link-bg-active: $topbar-link-bg;
 $topbar-link-bg-active-hover: scale-color($topbar-link-bg, $lightness: -14%);
 $topbar-dropdown-bg: scale-color($topbar-bg, $lightness: -28%);
 
-$body-bg: #FFF url(public/img/linedpaper.png) repeat;
+$body-bg: #FFF url(img/linedpaper.png) repeat;
 $row-width: rem-calc(1400);
 $global-radius: 0.25rem;
 
@@ -208,64 +208,6 @@ footer {
   div {
     p:last-child {
       margin-bottom: 0;
-    }
-  }
-}
-
-// Dashboard
-#dashboard {
-  .item-list {
-    $item-list-margin-width: 2.5em;
-    $item-list-padding: 0.5em;
-    box-shadow: 0 2px 6px 0 rgba(0,0,0,.2),0 25px 50px 0 rgba(0,0,0,.15);
-    margin-top: 5em;
-    position: relative;
-    .input {
-      form {
-        input {
-          margin: 0;
-          padding: $input-padding;
-        }
-      }
-    }
-    .item {
-      border-top: 1px dotted scale-color($light-border-color, $lightness: 20%);
-      overflow: hidden;
-      &.complete {
-        text-decoration: line-through;
-      }
-      .margin {
-        float: left;
-        height: 2.5em;
-        position: relative;
-        width: $item-list-margin-width + $item-list-padding;
-        .toggle {
-          height: 100%;
-          width: 100%;
-          margin: 0;
-        }
-      }
-      .line {
-        cursor: pointer;
-        padding: $item-list-padding;
-        padding-left: $item-list-margin-width + $item-list-padding * 3;
-        .delete {
-          color: $alert-color;
-          float: right;
-        }
-      }
-      &:last-of-type:before {
-        content: '';
-        border-left: 1px solid #f5d6d6;
-        border-right: 1px solid #f5d6d6;
-        width: $item-list-padding;
-        position: absolute;
-        top: 0;
-        left: $item-list-margin-width + $item-list-padding;
-        height: 100%;
-      }
-    }
-    &#tasks {
     }
   }
 }
