@@ -16,7 +16,7 @@ MeasurementsSchema = new SimpleSchema(
   duration:
     type: Number
     label: 'Duration (in seconds)'
-    optional: true
+    defaultValue: 0
   measurement_type:
     type: String
     label: 'MeasurementType name'
@@ -45,6 +45,6 @@ Meteor.methods
       source: source
       user: Meteor.userId()
 
-    deleteMeasurementsWithSource: (source) ->
-      Measurements.remove
-        source: source
+  deleteMeasurementsWithSource: (source) ->
+    Measurements.remove
+      source: source
