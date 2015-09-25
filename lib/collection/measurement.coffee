@@ -8,7 +8,7 @@ MeasurementsSchema = new SimpleSchema(
   reps:
     type: Number
     label: 'Repetitions'
-    optional: true
+    defaultValue: 0
   start_time:
     type: Date
     label: 'Start time'

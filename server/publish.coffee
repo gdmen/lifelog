@@ -10,8 +10,16 @@ Meteor.publish 'userData', ->
 
 
 Meteor.publish 'measurements', ->
-  Measurements.find user: @userId
+  if @userId
+    return Measurements.find user: @userId
+  else
+    @ready()
+  return
 
 
 Meteor.publish 'measurement_types', ->
-  MeasurementTypes.find user: @userId
+  if @userId
+    return MeasurementTypes.find user: @userId
+  else
+    @ready()
+  return
