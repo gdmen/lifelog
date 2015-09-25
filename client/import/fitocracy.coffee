@@ -2,6 +2,24 @@ Template.fitocracy.events
 
   'change #files': (e) ->
     data_source = 'fitocracy'
+    name_override_map =
+      'Ab Wheel (kneeling)': 'Kneeling Ab Wheel'
+      'Barbell Bench Press': 'Flat Barbell Bench Press'
+      'Barbell Deadlift': 'Conventional Barbell Deadlift'
+      'Barbell Squat': 'Barbell Back Squat'
+      'Chin-Up': 'Chin Up'
+      'Cycling': 'Road Cycling'
+      'Dips - Triceps Version': 'Parallel Bar Triceps Dip'
+      'General Yoga': 'Yoga'
+      'Indoor Volleyball': 'Volleyball'
+      'Light Walking (secondary e.g. commute, on the job, etc)': 'Walking'
+      'One-Arm Dumbbell Row': 'One Arm Dumbbell Row'
+      'Parallel-Grip Pull-Up': 'Neutral Grip Pull Up'
+      'Pull-Up': 'Pull Up'
+      'Push-Up': 'Push Up'
+      'Standing Military Press': 'Standing Barbell Shoulder Press (OHP)'
+      'Wide-Grip Pull-Up': 'Wide Grip Pull Up'
+
     files = e.target.files or e.dataTransfer.files
 
     Meteor.call 'deleteMeasurementsWithSource', data_source
@@ -10,12 +28,12 @@ Template.fitocracy.events
       do (file) ->
         reader = new FileReader
         reader.onloadend = (e) ->
-          csv = e.target.result
-          all = Papa.parse csv
-          all = all['data']
-          header = all.shift()
+          text = e.target.result
+          csv = Papa.parse text
+          csv = csv['data']
+          header = csv.shift()
           # ["Activity", "Date (YYYYMMDD)", "Set", "", "unit", "Combined", "Points"]
-          _.each all, (entry) ->
+          _.each csv, (entry) ->
             if entry[0] == ''
               return
             name = entry[0]
@@ -53,10 +71,12 @@ Template.fitocracy.events
                   when 'min'
                     duration = _value * 60
                   else
-                    console.log 'could not parse ' + piece
+                    console.log 'could not parse units from "' + piece + '"'
+
+            if name of name_override_map
+              name = name_override_map[name]
 
             Meteor.call 'createMeasurementType', name, units, 'exercise'
-            console.log name + '|' + value + '|' + reps + '|' + date + '|' + duration
             Meteor.call 'createMeasurement', name, value, reps, date, duration, data_source
             return
           return
