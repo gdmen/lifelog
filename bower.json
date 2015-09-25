@@ -1,9 +1,10 @@
 {
-  "name":  "HackerTracker",
+  "name":  "LifeLog",
   "version": "0.0.1",
   "dependencies": {
     "foundation": "latest",
     "font-awesome": "latest",
-    "papaparse": "latest"
+    "papaparse": "latest",
+    "highcharts.com": "latest"
   }
 }
