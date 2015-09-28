@@ -3,7 +3,7 @@ Template.fitnotes.events
   'change #files': (e) ->
     data_source = 'fitnotes'
     name_override_map =
-      'Barbell Deadlift': 'Conventional Barbell Deadlift'
+      'Deadlift': 'Conventional Barbell Deadlift'
       'Barbell Squat': 'Barbell Back Squat'
       'BJJ': 'Brazilian Jiu-Jitsu'
       'Dumbbell Overhead Triceps Extension': 'Lying Dumbbell Triceps Extension'
