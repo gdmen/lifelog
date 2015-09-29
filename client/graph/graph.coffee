@@ -1,6 +1,17 @@
 Meteor.subscribe 'measurement_types'
 Meteor.subscribe 'measurements'
 
+
+getBodyMetricDisplayData = (name) ->
+  datapoints = Measurements.find {'measurement_type': name}
+  datapoints = datapoints.fetch()
+  display_data = []
+  for point in datapoints
+    do (point) ->
+      display_data.push [point['start_time'].valueOf(), point['value']]
+  return display_data
+
+
 getLiftDisplayData = (name) ->
   datapoints = Measurements.find {'measurement_type': name}
   datapoints = datapoints.fetch()
@@ -51,22 +62,22 @@ getLiftDisplayData = (name) ->
       while i < increments
         display_data.push [most_recent[0] + i * one_day, Math.floor window_max - (increments - i) / increments * value_diff]
         ++i
-
     display_data.push [date, window_max]
 
   return display_data
+
 
 Template.graph.helpers
 
   renderGraphs: () ->
 
-    graph_div = $('#one-rep-max')
-    if !_.isEmpty(graph_div)
+    one_rep_max_graph_div = $('#one-rep-max')
+    if !_.isEmpty(one_rep_max_graph_div)
       deadlift_data = getLiftDisplayData 'Conventional Barbell Deadlift'
       squat_data = getLiftDisplayData 'Barbell Back Squat'
       bench_data = getLiftDisplayData 'Flat Barbell Bench Press'
       renderTo = $('<div>')
-      graph_div.html renderTo
+      one_rep_max_graph_div.html renderTo
       renderTo.highcharts(
         chart:
           type: 'line'
@@ -92,6 +103,30 @@ Template.graph.helpers
             name: 'bench'
             data: bench_data
           }
+        ]
+      )
+
+    bw_graph_div = $('#body-weight')
+    if !_.isEmpty(bw_graph_div)
+      bw_data = getBodyMetricDisplayData 'Body Weight'
+      renderTo = $('<div>')
+      bw_graph_div.html renderTo
+      renderTo.highcharts(
+        chart:
+          type: 'line'
+        title:
+          text: 'Body Weight'
+        tooltip:
+          formatter: ->
+            '<b>' + @y + ' lbs</b> ' + @series.name + '<br/>' + Highcharts.dateFormat('%b %e, %Y', new Date(@x))
+        height: 400
+        xAxis:
+          type: 'datetime'
+        yAxis:
+          units: 'lbs'
+        series: [
+          name: 'body weight'
+          data: bw_data
         ]
       )
 
