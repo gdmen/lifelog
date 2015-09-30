@@ -1,9 +1,22 @@
 Meteor.subscribe 'measurement_types'
 Meteor.subscribe 'measurements'
 
+#START_DATE = new Date('Jul 20, 2015')
+START_DATE = new Date('May 22, 2012')
+
+getSleepDurationDisplayData = () ->
+  datapoints = Measurements.find {'measurement_type': 'Sleep', 'start_time': { $gte : START_DATE } }
+  datapoints = datapoints.fetch()
+  display_data = []
+  for point in datapoints
+    do (point) ->
+      hours = Number (point['duration'] / 3600).toFixed(1)
+      display_data.push [point['start_time'].valueOf(), hours]
+  return display_data
+
 
 getBodyMetricDisplayData = (name) ->
-  datapoints = Measurements.find {'measurement_type': name}
+  datapoints = Measurements.find {'measurement_type': name, 'start_time': { $gte : START_DATE } }
   datapoints = datapoints.fetch()
   display_data = []
   for point in datapoints
@@ -13,7 +26,7 @@ getBodyMetricDisplayData = (name) ->
 
 
 getLiftDisplayData = (name) ->
-  datapoints = Measurements.find {'measurement_type': name}
+  datapoints = Measurements.find {'measurement_type': name, 'start_time': { $gte : START_DATE } }
   datapoints = datapoints.fetch()
   # Highest calculated 1rm per day
   max_per_day = {}
@@ -116,17 +129,47 @@ Template.graph.helpers
           type: 'line'
         title:
           text: 'Body Weight'
+        legend:
+          enabled: false
         tooltip:
           formatter: ->
             '<b>' + @y + ' lbs</b> ' + @series.name + '<br/>' + Highcharts.dateFormat('%b %e, %Y', new Date(@x))
         height: 400
         xAxis:
           type: 'datetime'
+          min: START_DATE.getTime()
         yAxis:
           units: 'lbs'
         series: [
           name: 'body weight'
           data: bw_data
+        ]
+      )
+
+    sleep_duration_graph_div = $('#sleep-duration')
+    if !_.isEmpty(sleep_duration_graph_div)
+      sleep_duration_data = getSleepDurationDisplayData()
+      renderTo = $('<div>')
+      sleep_duration_graph_div.html renderTo
+      renderTo.highcharts(
+        chart:
+          type: 'line'
+        title:
+          text: 'Sleep Duration'
+        legend:
+          enabled: false
+        tooltip:
+          formatter: ->
+            '<b>' + @y + ' hours</b> ' + @series.name + '<br/>' + Highcharts.dateFormat('%b %e, %Y', new Date(@x))
+        height: 400
+        xAxis:
+          type: 'datetime'
+          min: START_DATE.getTime()
+        yAxis:
+          units: 'hours'
+        series: [
+          name: 'sleep'
+          data: sleep_duration_data
         ]
       )
 
