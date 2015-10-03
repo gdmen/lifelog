@@ -28,7 +28,7 @@ Template.sleep.events
             if !_.isNull minutes
                 duration += 60 * Number(minutes[0])
 
-            Meteor.call 'createMeasurementType', name, '', 'task time'
+            Meteor.call 'createMeasurementType', name, '', 'input'
             Meteor.call 'createMeasurement', name, 0, 0, date, duration, data_source
             return
           return

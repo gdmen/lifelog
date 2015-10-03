@@ -1,11 +1,21 @@
 Meteor.subscribe 'measurement_types'
 Meteor.subscribe 'measurements'
 
-#START_DATE = new Date('Jul 20, 2015')
 START_DATE = new Date('May 22, 2012')
 
+
+getCalorieDisplayData = () ->
+  datapoints = Measurements.find {'measurement_type': 'Calories', 'start_time': { $gte : START_DATE } }, sort: 'start_time': 1
+  datapoints = datapoints.fetch()
+  display_data = []
+  for point in datapoints
+    do (point) ->
+      display_data.push [point['start_time'].valueOf(), point['value']]
+  return display_data
+
+
 getSleepDurationDisplayData = () ->
-  datapoints = Measurements.find {'measurement_type': 'Sleep', 'start_time': { $gte : START_DATE } }
+  datapoints = Measurements.find {'measurement_type': 'Sleep', 'start_time': { $gte : START_DATE } }, sort: 'start_time': 1
   datapoints = datapoints.fetch()
   display_data = []
   for point in datapoints
@@ -16,7 +26,7 @@ getSleepDurationDisplayData = () ->
 
 
 getBodyMetricDisplayData = (name) ->
-  datapoints = Measurements.find {'measurement_type': name, 'start_time': { $gte : START_DATE } }
+  datapoints = Measurements.find {'measurement_type': name, 'start_time': { $gte : START_DATE } }, sort: 'start_time': 1
   datapoints = datapoints.fetch()
   display_data = []
   for point in datapoints
@@ -165,6 +175,33 @@ Template.graph.helpers
         series: [
           name: 'sleep'
           data: sleep_duration_data
+        ]
+      )
+
+    calorie_graph_div = $('#calories')
+    if !_.isEmpty(calorie_graph_div)
+      calorie_data = getCalorieDisplayData()
+      renderTo = $('<div>')
+      calorie_graph_div.html renderTo
+      renderTo.highcharts(
+        chart:
+          type: 'scatter'
+        title:
+          text: 'Calories'
+        legend:
+          enabled: false
+        tooltip:
+          formatter: ->
+            '<b>' + @y + ' calories</b> ' + @series.name + '<br/>' + Highcharts.dateFormat('%b %e, %Y', new Date(@x))
+        height: 400
+        xAxis:
+          type: 'datetime'
+          min: START_DATE.getTime()
+        yAxis:
+          units: 'calories'
+        series: [
+          name: 'calories eaten'
+          data: calorie_data
         ]
       )
 
