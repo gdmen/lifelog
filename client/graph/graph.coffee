@@ -89,6 +89,7 @@ Template.graph.helpers
       deadlift_data = getLiftDisplayData 'Conventional Barbell Deadlift'
       squat_data = getLiftDisplayData 'Barbell Back Squat'
       bench_data = getLiftDisplayData 'Flat Barbell Bench Press'
+      ohp_data = getLiftDisplayData 'Standing Barbell Shoulder Press (OHP)'
       renderTo = $('<div>')
       one_rep_max_graph_div.html renderTo
       renderTo.highcharts(
@@ -115,6 +116,9 @@ Template.graph.helpers
           }, {
             name: 'bench'
             data: bench_data
+          }, {
+            name: 'ohp'
+            data: ohp_data
           }
         ]
       )
