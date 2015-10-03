@@ -49,8 +49,8 @@ getLiftDisplayData = (name) ->
 
   # Milliseconds days
   one_day = 86400000
-  thirty_days = one_day * 30
-  # Moving window of maxes over the past 30 days
+  days_max_persists = one_day * 30
+  # Moving window of maxes over the past <days_max_persists> days
   window = []
   window_dates = []
   display_data = []
@@ -59,22 +59,13 @@ getLiftDisplayData = (name) ->
     window.push one_rep_max
     window_dates.push date
     for wdate in window_dates
-      if date - thirty_days > wdate
+      if date - days_max_persists > wdate
         window.shift()
       else
         break
     while window_dates.length > window.length
       window_dates.shift()
     window_max = _.max window
-    # Backfill maxes
-    most_recent = display_data[display_data.length - 1]
-    if !_.isUndefined most_recent
-      increments = (date - most_recent[0]) / one_day
-      value_diff = window_max - most_recent[1]
-      i = 1
-      while i < increments
-        display_data.push [most_recent[0] + i * one_day, Math.floor window_max - (increments - i) / increments * value_diff]
-        ++i
     display_data.push [date, window_max]
 
   return display_data
