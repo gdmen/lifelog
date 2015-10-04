@@ -1,6 +1,9 @@
 Meteor.subscribe 'measurement_types'
 Meteor.subscribe 'measurements'
 
+
+# Milliseconds in a day
+ONE_DAY = 86400000
 START_DATE = new Date('May 22, 2012')
 
 
@@ -57,9 +60,7 @@ getLiftDisplayData = (name) ->
   if !(current_timestamp of max_per_day)
     max_per_day[current_timestamp] = [current_timestamp, 0]
 
-  # Milliseconds days
-  one_day = 86400000
-  days_max_persists = one_day * 30
+  days_max_persists = ONE_DAY * 30
   # Moving window of maxes over the past <days_max_persists> days
   window = []
   window_dates = []
@@ -81,26 +82,64 @@ getLiftDisplayData = (name) ->
   return display_data
 
 
+getCombinedLiftDisplayData = (lift_data_array) ->
+  display_data = []
+  lift_maxes = []
+  for i in [0...lift_data_array.length] by 1
+    lift_maxes.push 0
+  days_interval = ONE_DAY * 30
+  date_to_check = START_DATE.getTime()
+  current_date = (new Date()).getTime()
+  # Add a max to the graph for every <days_interval> days since START_DATE
+  while date_to_check < current_date
+    for i of lift_data_array
+      lift_data = lift_data_array[i]
+      for entry in lift_data
+        if entry[0] <= date_to_check
+          lift_maxes[i] = Math.max(lift_maxes[i], entry[1])
+    total_max = _.reduce lift_maxes, ((sum, el) -> sum + el), 0
+    display_data.push [date_to_check, total_max]
+    date_to_check += days_interval
+
+  date_to_check = current_date
+  for i of lift_data_array
+    lift_data = lift_data_array[i]
+    for entry in lift_data
+      if entry[0] <= date_to_check
+        lift_maxes[i] = Math.max(lift_maxes[i], entry[1])
+  total_max = _.reduce lift_maxes, ((sum, el) -> sum + el), 0
+  display_data.push [date_to_check, total_max]
+
+  return display_data
+
+
 Template.graph.helpers
 
   renderGraphs: () ->
-
     one_rep_max_graph_div = $('#one-rep-max')
     if !_.isEmpty(one_rep_max_graph_div)
       deadlift_data = getLiftDisplayData 'Conventional Barbell Deadlift'
       squat_data = getLiftDisplayData 'Barbell Back Squat'
       bench_data = getLiftDisplayData 'Flat Barbell Bench Press'
       ohp_data = getLiftDisplayData 'Standing Barbell Shoulder Press (OHP)'
+
       renderTo = $('<div>')
       one_rep_max_graph_div.html renderTo
       renderTo.highcharts(
         chart:
-          type: 'line'
+          type: 'spline'
         title:
           text: 'Estimated One Rep Max'
         tooltip:
           formatter: ->
             '<b>' + @y + ' lbs</b> ' + @series.name + '<br/>' + Highcharts.dateFormat('%b %e, %Y', new Date(@x))
+        plotOptions:
+          series:
+            marker:
+              enabled: false
+              symbol: 'circle'
+              radius: 2
+            fillOpacity: 0.5
         height: 400
         xAxis:
           type: 'datetime'
@@ -131,7 +170,7 @@ Template.graph.helpers
       bw_graph_div.html renderTo
       renderTo.highcharts(
         chart:
-          type: 'line'
+          type: 'spline'
         title:
           text: 'Body Weight'
         legend:
@@ -158,7 +197,7 @@ Template.graph.helpers
       sleep_duration_graph_div.html renderTo
       renderTo.highcharts(
         chart:
-          type: 'line'
+          type: 'scatter'
         title:
           text: 'Sleep Duration'
         legend:
@@ -202,6 +241,69 @@ Template.graph.helpers
         series: [
           name: 'calories eaten'
           data: calorie_data
+        ]
+      )
+
+    timeline_graph_div = $('#timeline')
+    if !_.isEmpty(timeline_graph_div)
+      total_max_data = getCombinedLiftDisplayData [deadlift_data, squat_data, bench_data]
+      renderTo = $('<div>')
+      timeline_graph_div.html renderTo
+      renderTo.highcharts(
+        title:
+          text: 'Timeline'
+        tooltip:
+          formatter: ->
+            @series.name + ': <b>' + @y + ' lbs</b><br/>' + Highcharts.dateFormat('%b %e, %Y', new Date(@x))
+        plotOptions:
+          series:
+            marker:
+              enabled: false
+              symbol: 'circle'
+              radius: 2
+            fillOpacity: 0.5
+        height: 800
+        xAxis:
+          type: 'datetime'
+          min: START_DATE.getTime()
+        yAxis: [
+          {
+            title:
+              text: 'Total 1RM'
+              style:
+                color: Highcharts.getOptions().colors[2]
+            labels:
+              format: '{value} lbs'
+              style:
+                color: Highcharts.getOptions().colors[2]
+            min: 0
+          }, {
+            title:
+              text: 'Body Weight'
+              style:
+                color: Highcharts.getOptions().colors[0]
+            labels:
+              format: '{value} lbs'
+              style:
+                color: Highcharts.getOptions().colors[0]
+            opposite: true
+          }
+        ]
+        series: [
+          {
+            name: 'Total 1RM'
+            type: 'line'
+            dashStyle: 'dash'
+            color: Highcharts.getOptions().colors[2]
+            data: total_max_data
+            step: true
+          }, {
+            name: 'Body Weight'
+            type: 'spline'
+            data: bw_data
+            color: Highcharts.getOptions().colors[0]
+            yAxis: 1
+          }
         ]
       )
 
