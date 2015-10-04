@@ -82,33 +82,47 @@ getLiftDisplayData = (name) ->
   return display_data
 
 
-getCombinedLiftDisplayData = (lift_data_array) ->
+getWilks = (bw, total) ->
+  a = -216.0475144
+  b = 16.2606339
+  c = -0.002388645
+  d = -0.00113732
+  e = 0.00000701863
+  f = -0.00000001291
+  coefficient = 500 / (a + b*bw + c*Math.pow(bw, 2) + d*Math.pow(bw, 3) + e*Math.pow(bw, 4) + f*Math.pow(bw, 5))
+  return coefficient * total
+
+
+getWilksDisplayData = (lift_data_array, bw_data) ->
   display_data = []
   lift_maxes = []
   for i in [0...lift_data_array.length] by 1
     lift_maxes.push 0
   days_interval = ONE_DAY * 30
-  date_to_check = START_DATE.getTime()
+  date_to_check = START_DATE.getTime() + days_interval
   current_date = (new Date()).getTime()
   # Add a max to the graph for every <days_interval> days since START_DATE
-  while date_to_check < current_date
+  while date_to_check <= current_date
     for i of lift_data_array
       lift_data = lift_data_array[i]
       for entry in lift_data
         if entry[0] <= date_to_check
           lift_maxes[i] = Math.max(lift_maxes[i], entry[1])
     total_max = _.reduce lift_maxes, ((sum, el) -> sum + el), 0
-    display_data.push [date_to_check, total_max]
-    date_to_check += days_interval
 
-  date_to_check = current_date
-  for i of lift_data_array
-    lift_data = lift_data_array[i]
-    for entry in lift_data
-      if entry[0] <= date_to_check
-        lift_maxes[i] = Math.max(lift_maxes[i], entry[1])
-  total_max = _.reduce lift_maxes, ((sum, el) -> sum + el), 0
-  display_data.push [date_to_check, total_max]
+    bw = 0
+    for entry in bw_data
+      if entry[0] > date_to_check
+        break
+      bw = entry[1]
+
+    total_kgs = total_max / 2.2046
+    wilks = getWilks bw, total_kgs
+    display_data.push [date_to_check, wilks]
+    if date_to_check == current_date
+      break
+    date_to_check += days_interval
+    date_to_check = Math.min date_to_check, current_date
 
   return display_data
 
@@ -140,7 +154,6 @@ Template.graph.helpers
               symbol: 'circle'
               radius: 2
             fillOpacity: 0.5
-        height: 400
         xAxis:
           type: 'datetime'
         yAxis:
@@ -178,7 +191,6 @@ Template.graph.helpers
         tooltip:
           formatter: ->
             '<b>' + @y + ' lbs</b> ' + @series.name + '<br/>' + Highcharts.dateFormat('%b %e, %Y', new Date(@x))
-        height: 400
         xAxis:
           type: 'datetime'
           min: START_DATE.getTime()
@@ -205,7 +217,6 @@ Template.graph.helpers
         tooltip:
           formatter: ->
             '<b>' + @y + ' hours</b> ' + @series.name + '<br/>' + Highcharts.dateFormat('%b %e, %Y', new Date(@x))
-        height: 400
         xAxis:
           type: 'datetime'
           min: START_DATE.getTime()
@@ -232,7 +243,6 @@ Template.graph.helpers
         tooltip:
           formatter: ->
             '<b>' + @y + ' calories</b> ' + @series.name + '<br/>' + Highcharts.dateFormat('%b %e, %Y', new Date(@x))
-        height: 400
         xAxis:
           type: 'datetime'
           min: START_DATE.getTime()
@@ -246,15 +256,15 @@ Template.graph.helpers
 
     timeline_graph_div = $('#timeline')
     if !_.isEmpty(timeline_graph_div)
-      total_max_data = getCombinedLiftDisplayData [deadlift_data, squat_data, bench_data]
+      wilks_data = getWilksDisplayData [deadlift_data, squat_data, bench_data], bw_data
       renderTo = $('<div>')
       timeline_graph_div.html renderTo
       renderTo.highcharts(
+        chart:
+          height: 400
         title:
           text: 'Timeline'
-        tooltip:
-          formatter: ->
-            @series.name + ': <b>' + @y + ' lbs</b><br/>' + Highcharts.dateFormat('%b %e, %Y', new Date(@x))
+        #    @series.name + ': <b>' + @y + ' lbs</b><br/>' + Highcharts.dateFormat('%b %e, %Y', new Date(@x))
         plotOptions:
           series:
             marker:
@@ -262,47 +272,21 @@ Template.graph.helpers
               symbol: 'circle'
               radius: 2
             fillOpacity: 0.5
-        height: 800
         xAxis:
           type: 'datetime'
           min: START_DATE.getTime()
-        yAxis: [
-          {
-            title:
-              text: 'Total 1RM'
-              style:
-                color: Highcharts.getOptions().colors[2]
-            labels:
-              format: '{value} lbs'
-              style:
-                color: Highcharts.getOptions().colors[2]
-            min: 0
-          }, {
-            title:
-              text: 'Body Weight'
-              style:
-                color: Highcharts.getOptions().colors[0]
-            labels:
-              format: '{value} lbs'
-              style:
-                color: Highcharts.getOptions().colors[0]
-            opposite: true
-          }
-        ]
         series: [
           {
-            name: 'Total 1RM'
+            name: 'Wilks Points'
             type: 'line'
-            dashStyle: 'dash'
             color: Highcharts.getOptions().colors[2]
-            data: total_max_data
+            data: wilks_data
             step: true
           }, {
             name: 'Body Weight'
             type: 'spline'
             data: bw_data
             color: Highcharts.getOptions().colors[0]
-            yAxis: 1
           }
         ]
       )
