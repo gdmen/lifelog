@@ -90,7 +90,8 @@ getWilks = (bw, total) ->
   e = 0.00000701863
   f = -0.00000001291
   coefficient = 500 / (a + b*bw + c*Math.pow(bw, 2) + d*Math.pow(bw, 3) + e*Math.pow(bw, 4) + f*Math.pow(bw, 5))
-  return coefficient * total
+  wilks = coefficient * total
+  return wilks
 
 
 getWilksDisplayData = (lift_data_array, bw_data) ->
@@ -117,7 +118,8 @@ getWilksDisplayData = (lift_data_array, bw_data) ->
       bw = entry[1]
 
     total_kgs = total_max / 2.2046
-    wilks = getWilks bw, total_kgs
+    bw_kgs = bw / 2.2046
+    wilks = getWilks bw_kgs, total_kgs
     display_data.push [date_to_check, wilks]
     if date_to_check == current_date
       break
