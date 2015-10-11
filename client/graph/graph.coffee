@@ -129,6 +129,31 @@ getWilksDisplayData = (lift_data_array, bw_data) ->
   return display_data
 
 
+getTotalMaxDisplayData = (lift_data_array) ->
+  display_data = []
+  lift_maxes = []
+  for i in [0...lift_data_array.length] by 1
+    lift_maxes.push 0
+  days_interval = ONE_DAY * 30
+  date_to_check = START_DATE.getTime()
+  current_date = (new Date()).getTime()
+  # Add a max to the graph for every <days_interval> days since START_DATE
+  while date_to_check <= current_date
+    for i of lift_data_array
+      lift_data = lift_data_array[i]
+      for entry in lift_data
+        if entry[0] <= date_to_check
+          lift_maxes[i] = Math.max(lift_maxes[i], entry[1])
+    total_max = _.reduce lift_maxes, ((sum, el) -> sum + el), 0
+    display_data.push [date_to_check, total_max]
+    if date_to_check == current_date
+      break
+    date_to_check += days_interval
+    date_to_check = Math.min date_to_check, current_date
+
+  return display_data
+
+
 Template.graph.helpers
 
   renderGraphs: () ->
@@ -289,6 +314,37 @@ Template.graph.helpers
             type: 'spline'
             data: bw_data
             color: Highcharts.getOptions().colors[0]
+          }
+        ]
+      )
+
+    total_max_graph_div = $('#total-max')
+    if !_.isEmpty(total_max_graph_div)
+      total_max_data = getTotalMaxDisplayData [deadlift_data, squat_data, bench_data]
+      renderTo = $('<div>')
+      total_max_graph_div.html renderTo
+      renderTo.highcharts(
+        chart:
+          height: 400
+        title:
+          text: 'Total Max'
+        #    @series.name + ': <b>' + @y + ' lbs</b><br/>' + Highcharts.dateFormat('%b %e, %Y', new Date(@x))
+        plotOptions:
+          series:
+            marker:
+              enabled: false
+              symbol: 'circle'
+              radius: 2
+            fillOpacity: 0.5
+        xAxis:
+          type: 'datetime'
+          min: START_DATE.getTime()
+        series: [
+          {
+            name: 'Total Max'
+            type: 'line'
+            data: total_max_data
+            step: true
           }
         ]
       )
