@@ -21,10 +21,23 @@ getSleepDurationDisplayData = () ->
   datapoints = Measurements.find {'measurement_type': 'Sleep', 'start_time': { $gte : START_DATE } }, sort: 'start_time': 1
   datapoints = datapoints.fetch()
   display_data = []
-  for point in datapoints
-    do (point) ->
-      hours = Number (point['duration'] / 3600).toFixed(1)
-      display_data.push [point['start_time'].valueOf(), hours]
+  if datapoints.length > 0
+    # Merge consecutive entries with the same date
+    prev_time = datapoints[0]['start_time'].valueOf()
+    prev_day = (new Date(prev_time)).setHours(0,0,0,0)
+    cumulative_hours = 0
+    for point in datapoints
+      do (point) ->
+        start_time = point['start_time'].valueOf()
+        start_day = (new Date(start_time)).setHours(0,0,0,0)
+        if start_day != prev_day
+          display_data.push [prev_day.valueOf(), cumulative_hours]
+          cumulative_hours = 0
+        hours = Number (point['duration'] / 3600).toFixed(1)
+        cumulative_hours += hours
+        prev_time = start_time
+        prev_day = start_day
+
   return display_data
 
 
@@ -107,7 +120,7 @@ getWilksDisplayData = (lift_data_array, bw_data) ->
     for i of lift_data_array
       lift_data = lift_data_array[i]
       for entry in lift_data
-        if entry[0] <= date_to_check
+        if entry[0] <= date_to_check && entry[0] > date_to_check - days_interval
           lift_maxes[i] = Math.max(lift_maxes[i], entry[1])
     total_max = _.reduce lift_maxes, ((sum, el) -> sum + el), 0
 
@@ -125,6 +138,8 @@ getWilksDisplayData = (lift_data_array, bw_data) ->
       break
     date_to_check += days_interval
     date_to_check = Math.min date_to_check, current_date
+    for i in [0...lift_maxes.length] by 1
+      lift_maxes[i] = 0
 
   return display_data
 
@@ -142,7 +157,7 @@ getTotalMaxDisplayData = (lift_data_array) ->
     for i of lift_data_array
       lift_data = lift_data_array[i]
       for entry in lift_data
-        if entry[0] <= date_to_check
+        if entry[0] <= date_to_check && entry[0] > date_to_check - days_interval
           lift_maxes[i] = Math.max(lift_maxes[i], entry[1])
     total_max = _.reduce lift_maxes, ((sum, el) -> sum + el), 0
     display_data.push [date_to_check, total_max]
@@ -150,6 +165,8 @@ getTotalMaxDisplayData = (lift_data_array) ->
       break
     date_to_check += days_interval
     date_to_check = Math.min date_to_check, current_date
+    for i in [0...lift_maxes.length] by 1
+      lift_maxes[i] = 0
 
   return display_data
 
