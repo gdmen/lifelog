@@ -5,6 +5,7 @@ Meteor.subscribe 'measurements'
 # Milliseconds in a day
 ONE_DAY = 86400000
 START_DATE = new Date('May 22, 2012')
+END_DATE = new Date()
 
 
 getCalorieDisplayData = () ->
@@ -200,6 +201,8 @@ Template.graph.helpers
             fillOpacity: 0.5
         xAxis:
           type: 'datetime'
+          min: START_DATE.getTime()
+          max: END_DATE.getTime()
         yAxis:
           min: 0
           units: 'lbs'
@@ -238,6 +241,7 @@ Template.graph.helpers
         xAxis:
           type: 'datetime'
           min: START_DATE.getTime()
+          max: END_DATE.getTime()
         yAxis:
           units: 'lbs'
         series: [
@@ -264,6 +268,7 @@ Template.graph.helpers
         xAxis:
           type: 'datetime'
           min: START_DATE.getTime()
+          max: END_DATE.getTime()
         yAxis:
           units: 'hours'
         series: [
@@ -290,6 +295,7 @@ Template.graph.helpers
         xAxis:
           type: 'datetime'
           min: START_DATE.getTime()
+          max: END_DATE.getTime()
         yAxis:
           units: 'calories'
         series: [
@@ -319,6 +325,7 @@ Template.graph.helpers
         xAxis:
           type: 'datetime'
           min: START_DATE.getTime()
+          max: END_DATE.getTime()
         series: [
           {
             name: 'Wilks Points'
@@ -356,6 +363,7 @@ Template.graph.helpers
         xAxis:
           type: 'datetime'
           min: START_DATE.getTime()
+          max: END_DATE.getTime()
         series: [
           {
             name: 'Total Max'
